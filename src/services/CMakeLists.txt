@@ -124,6 +124,9 @@ if (CALIPER_HAVE_MPI)
     add_subdirectory(tau)
   endif()
 endif()
+if (CALIPER_HAVE_ARIEL)
+  add_subdirectory(ariel)
+endif()
 
 list(APPEND CALIPER_SERVICES_SOURCES
   LoopStatistics.cpp)

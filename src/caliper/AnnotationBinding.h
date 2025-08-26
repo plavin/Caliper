@@ -110,11 +110,23 @@ protected:
     /// \param value The annotation name/value.
     virtual void on_begin(Caliper* c, const Attribute& attr, const Variant& value) {}
 
+    /// \brief Callback for an annotation begin event for an excluded region
+    /// \param c     Caliper instance
+    /// \param attr  Attribute on which the %Caliper begin event was invoked.
+    /// \param value The annotation name/value.
+    virtual void on_begin_excluded(Caliper* c, const Attribute& attr, const Variant& value) {}
+
     /// \brief Callback for an annotation end event
     /// \param c     Caliper instance
     /// \param attr  Attribute on which the %Caliper end event was invoked.
     /// \param value The annotation name/value.
     virtual void on_end(Caliper* c, const Attribute& attr, const Variant& value) {}
+
+    /// \brief Callback for an annotation end event for an excluded region
+    /// \param c     Caliper instance
+    /// \param attr  Attribute on which the %Caliper end event was invoked.
+    /// \param value The annotation name/value.
+    virtual void on_end_excluded(Caliper* c, const Attribute& attr, const Variant& value) {}
 
     /// \brief Initialization callback. Invoked after the %Caliper
     ///   initialization completed.
