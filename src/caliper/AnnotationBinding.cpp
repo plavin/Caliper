@@ -116,7 +116,6 @@ void AnnotationBinding::begin_cb(Caliper* c, const Attribute& attr, const Varian
     if (!::has_marker(attr, m_marker_attr))
         return;
     if (m_filter && !m_filter->pass(value)) {
-        this->on_begin_excluded(c, attr, value);
         return;
     }
 
@@ -128,7 +127,6 @@ void AnnotationBinding::end_cb(Caliper* c, const Attribute& attr, const Variant&
     if (!::has_marker(attr, m_marker_attr))
         return;
     if (m_filter && !m_filter->pass(value)) {
-        this->on_end_excluded(c, attr, value);
         return;
     }
 

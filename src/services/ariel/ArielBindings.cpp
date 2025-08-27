@@ -14,6 +14,7 @@
 #include <arielapi.h>
 
 #include <stack>
+#include <inttypes.h>
 
 using namespace cali;
 
@@ -42,7 +43,7 @@ public:
 
     const char* service_tag() const { return "ariel"; };
 
-    void on_begin(Caliper* c, const Attribute& attr, const Variant& value)
+    void on_begin(Caliper* c, const Attribute& attr, const Variant& value) override
     {
         //TODO: Always : ariel_output_stats();
         if (!enabled) {
@@ -52,7 +53,11 @@ public:
         enabled = true;
         if (attr.type() == CALI_TYPE_STRING) {
             const char* str = static_cast<const char*>(value.data());
-            printf("Beginning region: %s\n", str);
+            uint64_t timestamp = ariel_cycles();
+            printf("ARIEL-CALI-REGION-BEGIN %s %" PRIu64 "\n", str, timestamp);
+            ariel_output_stats();
+        } else {
+            printf("ARIEL-CALI-WARNING: Unknown attr.type()\n");
         }
         //stack.push(RegionType::INCLUDE);
     }
@@ -65,14 +70,21 @@ public:
         }
     }
 
-    void on_end(Caliper* c, const Attribute& attr, const Variant& value)
+    void on_end(Caliper* c, const Attribute& attr, const Variant& value) override
     {
         depth--;
         if (depth == 0) {
             ariel_disable();
             enabled = false;
         }
-        printf("end\n");
+        if (attr.type() == CALI_TYPE_STRING) {
+            const char* str = static_cast<const char*>(value.data());
+            uint64_t timestamp = ariel_cycles();
+            printf("ARIEL-CALI-REGION-END %s %" PRIu64 "\n", str, timestamp);
+            ariel_output_stats();
+        } else {
+            printf("ARIEL-CALI-WARNING: Unknown attr.type()\n");
+        }
         //arielapi_output_stats();
         //enabled = false;
     }
