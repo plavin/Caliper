@@ -27,17 +27,21 @@ class ArielBinding : public cali::AnnotationBinding
     bool enabled = false;
     int depth = 0;
 
+    /* To be used in a possible future mode where we
+     * turn off ariel for excluded regions nested in
+     * traced regions
+     */
+
+    /*
     enum class RegionType {
         INCLUDE,
         EXCLUDE,
         INVALID
     };
 
-    RegionType last = RegionType::INVALID;
-
     std::stack<RegionType> stack;
-    //void print_timestamp
-    //TODO: print out current cycle count in ariel and name of region
+    */
+
 
 public:
 
@@ -45,29 +49,33 @@ public:
 
     void on_begin(Caliper* c, const Attribute& attr, const Variant& value) override
     {
-        //TODO: Always : ariel_output_stats();
         if (!enabled) {
             ariel_enable();
+            enabled=true;
         }
         depth++;
         enabled = true;
         if (attr.type() == CALI_TYPE_STRING) {
             const char* str = static_cast<const char*>(value.data());
-            uint64_t timestamp = ariel_cycles();
-            printf("ARIEL-CALI-REGION-BEGIN %s %" PRIu64 "\n", str, timestamp);
-            ariel_output_stats();
+            ariel_output_stats_begin_region(str);
         } else {
             printf("ARIEL-CALI-WARNING: Unknown attr.type()\n");
         }
-        //stack.push(RegionType::INCLUDE);
     }
 
     void on_begin_excluded(Caliper* c, const Attribute& attr, const Variant& value)
     {
+        /* To be used in a possible future mode where we
+         * turn off ariel for excluded regions nested in
+         * traced regions
+         */
+
+        /*
         printf("on_begin_excluded\n");
         if (enabled) {
             ariel_disable();
         }
+        */
     }
 
     void on_end(Caliper* c, const Attribute& attr, const Variant& value) override
@@ -79,21 +87,24 @@ public:
         }
         if (attr.type() == CALI_TYPE_STRING) {
             const char* str = static_cast<const char*>(value.data());
-            uint64_t timestamp = ariel_cycles();
-            printf("ARIEL-CALI-REGION-END %s %" PRIu64 "\n", str, timestamp);
-            ariel_output_stats();
+            ariel_output_stats_end_region(str);
         } else {
             printf("ARIEL-CALI-WARNING: Unknown attr.type()\n");
         }
-        //arielapi_output_stats();
-        //enabled = false;
     }
 
     void on_end_excluded(Caliper* c, const Attribute& attr, const Variant& value)
     {
+        /* To be used in a possible future mode where we
+         * turn off ariel for excluded regions nested in
+         * traced regions
+         */
+
+        /*
         if (enabled && depth>0) {
             ariel_disable();
         }
+        */
     }
 };
 
